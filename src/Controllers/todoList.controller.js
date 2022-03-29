@@ -13,10 +13,7 @@ const createTask = (req, res) => {
   if (!body.hasOwnProperty('isCheck')) return res.status(404).send("Error! Checkbox not found");
   if (typeof body.isCheck !== "boolean") return res.status(422).send("Error! Checkbox value not correct");
 
-  const task = new Task({
-    text: body.text,
-    isCheck: body.isCheck
-  });
+  const task = new Task(body);
 
   task.save(() => {
     res.send(task);
@@ -32,10 +29,7 @@ const updateTask = (req, res) => {
   if (typeof body.isCheck !== "boolean") return res.status(422).send("Error! Checkbox value not correct");
   if (typeof id !== "string") return res.status(422).send("Error! Id value not correct");
 
-  const newTask = {
-    text: body.text,
-    isCheck: body.isCheck
-  };
+  const newTask = body;
 
   Task.findOneAndUpdate({ _id: id }, newTask, {new: true}, (err, task) => {
     if (err) return res.status(404).send('Task not found');
