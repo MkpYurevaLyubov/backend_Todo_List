@@ -8,8 +8,7 @@ const findTasks = (req, res) => {
 };
 
 const createTask = (req, res) => {
-  const isEmpty = Object.keys(req.body).length === 0;
-  if (isEmpty) return res.sendStatus(400);
+  if (!req.body.text || !req.body.isCheck) return res.sendStatus(400);
 
   const task = new Task({
     text: req.body.text,
@@ -22,9 +21,8 @@ const createTask = (req, res) => {
 };
 
 const updateTask = (req, res) => {
-  const isEmpty = Object.keys(req.body).length === 0;
   const id = req.body._id;
-  if (isEmpty || !id) return res.sendStatus(400);
+  if (!req.body.text || !req.body.isCheck || !id) return res.sendStatus(400);
 
   const newTask = {
     text: req.body.text,
