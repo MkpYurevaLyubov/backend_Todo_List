@@ -2,17 +2,20 @@ const Task = require("../Models/todoList.models");
 
 const findTasks = (req, res) => {
   Task.find({}, (err, tasks) => {
-    if (err) return res.sendStatus(404);
+    if (err) return res.status(500).send('Something broke!');
     res.send(tasks);
   });
 };
 
 const createTask = (req, res) => {
-  if (!req.body.text || !req.body.isCheck) return res.sendStatus(400);
+  const body = req.body;
+  if (!body.hasOwnProperty('text')) return res.status(404).send("Error! Text not found");
+  if (!body.hasOwnProperty('isCheck')) return res.status(404).send("Error! Checkbox not found");
+  if (typeof body.isCheck !== "boolean") return res.status(422).send("Error! Checkbox value not correct");
 
   const task = new Task({
-    text: req.body.text,
-    isCheck: req.body.isCheck
+    text: body.text,
+    isCheck: body.isCheck
   });
 
   task.save(() => {
@@ -21,26 +24,31 @@ const createTask = (req, res) => {
 };
 
 const updateTask = (req, res) => {
+  const body = req.body;
   const id = req.body._id;
-  if (!req.body.text || !req.body.isCheck || !id) return res.sendStatus(400);
+  if (!body.hasOwnProperty('text')) return res.status(404).send("Error! Text not found");
+  if (!body.hasOwnProperty('isCheck')) return res.status(404).send("Error! Checkbox not found");
+  if (!body.hasOwnProperty('_id')) return res.status(404).send("Error! Id not found");
+  if (typeof body.isCheck !== "boolean") return res.status(422).send("Error! Checkbox value not correct");
+  if (typeof id !== "string") return res.status(422).send("Error! Id value not correct");
 
   const newTask = {
-    text: req.body.text,
-    isCheck: req.body.isCheck
+    text: body.text,
+    isCheck: body.isCheck
   };
 
   Task.findOneAndUpdate({ _id: id }, newTask, {new: true}, (err, task) => {
-    if (err) return res.sendStatus(401);
+    if (err) return res.status(404).send('Task not found');
     res.send(task);
   });
 };
 
 const deleteTask = (req, res) => {
-  if (!req.query.id) return res.sendStatus(400);
   const id = req.query.id;
+  if (!id) return res.status(404).send("Error! Id not found");
 
   Task.findByIdAndDelete(id, (err, task) => {
-    if (err) return res.sendStatus(401);
+    if (err) return res.status(404).send('Task not found');
     res.send(task);
   });
 };
