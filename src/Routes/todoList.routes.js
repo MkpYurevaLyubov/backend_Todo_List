@@ -7,5 +7,6 @@ router.get("/allTasks", todoListControllers.findTasks);
 router.post("/createTask", todoListControllers.createTask);
 router.patch("/updateTask", todoListControllers.updateTask);
 router.delete("/deleteTask", todoListControllers.deleteTask);
+router.get("/findTask", todoListControllers.findTask);
 
 module.exports = router;
