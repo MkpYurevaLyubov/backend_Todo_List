@@ -47,9 +47,19 @@ const deleteTask = (req, res) => {
   });
 };
 
+const findTask = (req, res) => {
+  const id = req.query.id;
+  if (!id) return res.status(404).send("Error! Id not found");
+  Task.find({ _id: id }, (err, task) => {
+    if (err) return res.status(404).send('Task not found');
+    res.send(task);
+  });
+};
+
 module.exports = {
   findTasks,
   createTask,
   updateTask,
-  deleteTask
+  deleteTask,
+  findTask
 };
